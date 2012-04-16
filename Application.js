@@ -149,24 +149,9 @@ members :
 /******************************************************************************
 * FUNCTION: sendMessage
 ******************************************************************************/  
-  sendMessage : function (__parent)
+  sendMessage : function (Message)
   {
-    var EditMessage = "";
-    var OrigMessage = __parent.__Hash.get("Input").getValue();
-    
-    if(OrigMessage.substr(0,1) != "/")
-    {
-      if(__parent.getChannelName() != "default")
-        EditMessage = "/send \""+__parent.getChannelName()+"\" \""+OrigMessage+"\"";
-    }
-    else
-    {
-      EditMessage = OrigMessage;
-    }
-    
-    __ws.send(this.toNetstring(EditMessage));
-    
-    return undefined;
+    __ws.send(this.toNetstring(Message));
     this.debug("Message:"+Message);
   },
   

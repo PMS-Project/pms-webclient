@@ -53,7 +53,18 @@ members :
     this.__Hash.get("Input").addListener("keypress",function(e){
       if(e.getKeyIdentifier() == "Enter" && this.getValue() != "")
       {
-        __parent.__Hash.get("Core").sendMessage(__parent);
+        var Message = "";
+        
+        if(this.getValue().substr(0,1) != "/")
+        {
+          if(__parent.getChannelName() != "default")
+            Message = "/send \""+__parent.getChannelName()+"\" \""+this.getValue()+"\"";
+        }
+        else
+        {
+          Message = this.getValue();
+        }
+        __parent.__Hash.get("Core").sendMessage(Message);
         this.setValue("");        
       }
     });
