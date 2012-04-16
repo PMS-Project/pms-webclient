@@ -21,7 +21,9 @@ extend : qx.application.Standalone,
 construct : function()
 {
   this.base(arguments);
-  __activeTab = "default";
+  __activeTab     = "default";
+  this.__tabs     = new pms.Hash();
+  this.__widgets  = new pms.Hash();
 },
 
 /******************************************************************************
@@ -29,8 +31,8 @@ MEMBERS
 ******************************************************************************/
 members :
 {
-  '__tabs'        : new pms.Hash(),
-  '__widgets'     : new pms.Hash(),
+  '__tabs'        : null,
+  '__widgets'     : null,
   '__activeTab'   : null,
   'buffer'        : null,
   '__ws'          : null,
@@ -67,7 +69,7 @@ members :
     }
     else
     {
-      tabView.remove(this.__tabs[ChannelName]);
+      tabView.remove(this.__tabs.get(ChannelName));
       return 0;
     }
   },
@@ -83,11 +85,14 @@ members :
     this.__widgets.put(ChannelName,new pms.ChatWidget(this,ChannelName));
        
     this.__tabs.get(ChannelName).add(this.__widgets.get(ChannelName),{edge:0});
+    
+    //Adding Page to tabView
     tabView.add(this.__tabs.get(ChannelName));
+    
     this.setTabUnread(ChannelName);
     
-    this.debug("Widget["+ChannelName+"]:"+this.__widgets.get(ChannelName));
-    this.debug("Tab["+ChannelName+"]:"+this.__tabs.get(ChannelName));
+    //this.debug("Widget["+ChannelName+"]:"+this.__widgets.get(ChannelName));
+    //this.debug("Tab["+ChannelName+"]:"+this.__tabs.get(ChannelName));
   },
 
 /******************************************************************************
@@ -151,8 +156,7 @@ members :
 ******************************************************************************/  
   sendMessage : function (Message)
   {
-    __ws.send(this.toNetstring(Message));
-    this.debug("Message:"+Message);
+    __ws.send(this.toNetstring(Message)); 
   },
   
 /******************************************************************************
@@ -160,17 +164,101 @@ members :
 ******************************************************************************/
   receiveMessage : function (MessageObject)
   {
-    var name        = MessageObject.name;
-    var ChannelName = MessageObject.arguments[0];
-    var Message     = MessageObject.arguments[1];
+    var command = MessageObject.name;
+    var args    = MessageObject.arguments;
     
-    if(this.__widgets.get(ChannelName))
+    /*if(this.__widgets.get(ChannelName))
     {
       if(ChannelName != __activeTab)
       {      
             this.setTabUnread(ChannelName);
       }
       this.__widgets.get(ChannelName).setMessage(Message); 
+    }*/
+    
+    switch(command)
+    {
+      case "message":
+        // [0]: ChannelName
+        // [1]: Who
+        // [2]: When
+        // [3]: Message
+        this.debug("message");
+        this.__widgets.get(args[0]).setMessage(args[2]+" - "+args[1]+": "+args[3]);
+        break;
+        
+      case "joined":
+        // [0]: ChannelName
+        // [1]: Username
+        this.debug("joined");
+        this.debug(args[0]);
+        this.debug(args[1]);
+        this.__widgets.get(args[0]).setMessage("User "+args[1]+" joined channel.");
+        break;
+        
+      case "left":
+        // [0]: ChannelName
+        // [1]: Username
+        this.debug("left");
+        this.__widgets.get(args[0]).setMessage("User "+args[1]+" left channel.");
+        break;
+        
+      case "nickchange":
+        // [0]: OldNick
+        // [1]: NewNick
+        this.debug("nickchange");
+        // => ALLE widgets durchgehen
+        //this.__widgets.get(args[0]).setMessage("User "+args[0]+);
+        break;
+        
+      case "userlist":
+        // [0]: ChannelName
+        // [ ]: Nicknames
+        this.debug("userlist");
+        
+        break;
+        
+      case "channellist":
+        // [ ]: ChannelNames
+        this.debug("channellist");
+        // => NOCH SERVERMESSAGE
+        this.__widgets.get(args[0]).setMessage();
+        break;
+        
+      case "serverMessage":
+        // [0]: ChannelName
+        // [1]: Message
+        this.debug("serverMessage");
+        this.__widgets.get(args[0]).setMessage("PMS-Server: "+args[1]);
+        break;
+        
+      case "channeltopic":
+        // [0]: ChannelName
+        // [1]: Topic
+        this.debug("channeltopic");
+        // IMPLEMENT SET TOPIC
+        //this.__widgets.get(args[0]).setMessage();
+        break;
+        
+      case "openwindow":
+        // [0]: WindowName
+        this.debug("openwindow");
+        if(!this.__tabs.get(args[0]))
+        {
+          this.createTab(args[0]);
+        }
+        break;
+        
+      case "closewindow":
+        // [0]: WindowName
+        this.debug("closewindow");
+        this.closeTab(args[0]);
+        this.__tabs.remove(args[0]);
+        this.__widgets.remove(args[0]);
+        break;
+        
+      default:
+        break
     }
   },
 /******************************************************************************
