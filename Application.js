@@ -70,6 +70,11 @@ members :
     else
     {
       tabView.remove(this.__tabs.get(ChannelName));
+
+      // Remove Objects
+      this.__tabs.get(ChannelName).dispose(); 
+      this.__widgets.get(ChannelName).dispose();
+
       return 0;
     }
   },
@@ -90,9 +95,6 @@ members :
     tabView.add(this.__tabs.get(ChannelName));
     
     this.setTabUnread(ChannelName);
-    
-    //this.debug("Widget["+ChannelName+"]:"+this.__widgets.get(ChannelName));
-    //this.debug("Tab["+ChannelName+"]:"+this.__tabs.get(ChannelName));
   },
 
 /******************************************************************************
@@ -100,7 +102,8 @@ members :
 ******************************************************************************/
   setTabUnread : function (ChannelName)
   {
-    this.__tabs.get(ChannelName).setIcon("icon/16/apps/utilities-help.png");
+    if(ChannelName != this.__activeTab)
+      this.__tabs.get(ChannelName).setIcon("icon/16/apps/utilities-help.png");
   },
 
 /******************************************************************************
@@ -167,15 +170,6 @@ members :
     var command = MessageObject.name;
     var args    = MessageObject.arguments;
     
-    /*if(this.__widgets.get(ChannelName))
-    {
-      if(ChannelName != __activeTab)
-      {      
-            this.setTabUnread(ChannelName);
-      }
-      this.__widgets.get(ChannelName).setMessage(Message); 
-    }*/
-    
     switch(command)
     {
       case "message":
@@ -184,15 +178,13 @@ members :
         // [2]: When
         // [3]: Message
         this.debug("message");
-        this.__widgets.get(args[0]).setMessage(args[2]+" - "+args[1]+": "+args[3]);
+        var timedate = pms.timeFormat.format(args[2]);
+        this.__widgets.get(args[0]).setMessage(timedate+" - "+args[1]+": "+args[3]);
         break;
         
       case "joined":
         // [0]: ChannelName
         // [1]: Username
-        this.debug("joined");
-        this.debug(args[0]);
-        this.debug(args[1]);
         this.__widgets.get(args[0]).setMessage("User "+args[1]+" joined channel.");
         break;
         
@@ -207,8 +199,14 @@ members :
         // [0]: OldNick
         // [1]: NewNick
         this.debug("nickchange");
-        // => ALLE widgets durchgehen
-        //this.__widgets.get(args[0]).setMessage("User "+args[0]+);
+        
+        for(var x=0;x<this.__tabs.getLength();x++)
+        {
+          if(this.__tabs.getSortedKeys()[x] != "default")
+          {
+            this.__widgets.get(this.__tabs.getSortedKeys()[x]).setMessage("User "+args[0]+" is now called "+args[1]+".");
+          }
+        }
         break;
         
       case "userlist":
@@ -236,8 +234,7 @@ members :
         // [0]: ChannelName
         // [1]: Topic
         this.debug("channeltopic");
-        // IMPLEMENT SET TOPIC
-        //this.__widgets.get(args[0]).setMessage();
+        this.__widgets.get(args[0]).setTopic(args[1]);
         break;
         
       case "openwindow":

@@ -4,7 +4,6 @@ statics:
   displayFormat: 'd.m.Y - H:i:s',
 
   format: function(timestamp) {
-    
     var d = new Date(timestamp * 1000);
 
     var output = this.displayFormat;
@@ -22,7 +21,6 @@ statics:
       return "0" + number.toString();
     }
     return number;
-  };
-
+  }
 }
 });

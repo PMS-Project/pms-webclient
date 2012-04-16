@@ -28,7 +28,7 @@ construct : function(Core,ChannelName)
   this.__Hash.put("Input",        new qx.ui.form.TextField());
   this.__Hash.put("List",         new qx.ui.list.List(this.__Hash.get("ListData")));
   this.__Hash.put("UserList",     new qx.ui.list.List(this.__Hash.get("ListUserData")));
-  
+
   this.main();
 },
 
@@ -114,32 +114,10 @@ members :
   getChannelName : function ()
   {
     return this.__Hash.get("ChannelName");
+  },
+  setTopic : function (topic)
+  {
+    this.__Hash.get("Topic").setValue(topic);
   }
 }
 });
-/*
- var timeFormat = {
-  displayFormat: 'd.m.Y - H:i:s',
-  
-  format: function(timestamp) {
-    // convert unix timestamp to javascript date object
-
-    var d = new Date(timestamp * 1000);
-
-    var output = this.displayFormat;
-    output = output.replace(/d/g, this.padZero(d.getDate()))
-            .replace(/m/g, this.padZero(d.getMonth()))
-            .replace(/Y/g, d.getFullYear())
-            .replace(/H/g, this.padZero(d.getHours()))
-            .replace(/i/g, this.padZero(d.getMinutes()))
-            .replace(/s/g, this.padZero(d.getSeconds()));
-    return output;
-},
-
-padZero: function(number) {
-  if (number < 10) {
-  return "0" + number.toString();
-  }
-  return number;
-};
- */
