@@ -21,8 +21,7 @@ extend : qx.application.Standalone,
 construct : function()
 {
   this.base(arguments);
-  _parent = this;
-  _activeTab = "default";
+  __activeTab = "default";
 },
 
 /******************************************************************************
@@ -30,30 +29,30 @@ MEMBERS
 ******************************************************************************/
 members :
 {
-  '_tabs'       : new Object(),
-  '_widgets'    : new Object(),
-  '_parent'     : "",
-  '_activeTab'  : "",
-  'buffer'      : "",
+  '__tabs'        : new pms.Hash(),
+  '__widgets'     : new pms.Hash(),
+  '__activeTab'   : null,
+  'buffer'        : null,
+  '__ws'          : null,
 
 /******************************************************************************
 * FUNCTION: main
 ******************************************************************************/
   main : function()
   {
+    var __parent = this;
+    
     this.base(arguments);
     tabView = new qx.ui.tabview.TabView();
     this.getRoot().add(tabView, {edge: 25});
     this.createTab("default");    
-    this.createTab("test");
-    
+
     this.WebSocket();    
  
-    
     tabView.addListener("changeSelection",function(e)  
     {
-      _activeTab = e.getData()[0].getLabel();
-      _parent.setTabRead(e.getData()[0].getLabel());
+      __activeTab = e.getData()[0].getLabel();
+      __parent.setTabRead(e.getData()[0].getLabel());
     });
   },
   
@@ -68,7 +67,7 @@ members :
     }
     else
     {
-      tabView.remove(this._tabs[ChannelName]);
+      tabView.remove(this.__tabs[ChannelName]);
       return 0;
     }
   },
@@ -78,14 +77,17 @@ members :
 ******************************************************************************/
   createTab : function (ChannelName)
   {
-    this._tabs[ChannelName] = new qx.ui.tabview.Page(ChannelName);
-    this._tabs[ChannelName].setLayout(new qx.ui.layout.Canvas());
-
-    this._widgets[ChannelName] = new pms.ChatWidget();
+    this.__tabs.put(ChannelName,new qx.ui.tabview.Page(ChannelName));
+    this.__tabs.get(ChannelName).setLayout(new qx.ui.layout.Canvas());
     
-    this._tabs[ChannelName].add(this._widgets[ChannelName],{edge:0});
-    tabView.add(this._tabs[ChannelName]);
+    this.__widgets.put(ChannelName,new pms.ChatWidget(this,ChannelName));
+       
+    this.__tabs.get(ChannelName).add(this.__widgets.get(ChannelName),{edge:0});
+    tabView.add(this.__tabs.get(ChannelName));
     this.setTabUnread(ChannelName);
+    
+    this.debug("Widget["+ChannelName+"]:"+this.__widgets.get(ChannelName));
+    this.debug("Tab["+ChannelName+"]:"+this.__tabs.get(ChannelName));
   },
 
 /******************************************************************************
@@ -93,7 +95,7 @@ members :
 ******************************************************************************/
   setTabUnread : function (ChannelName)
   {
-    this._tabs[ChannelName].setIcon("icon/16/apps/utilities-help.png");
+    this.__tabs.get(ChannelName).setIcon("icon/16/apps/utilities-help.png");
   },
 
 /******************************************************************************
@@ -101,54 +103,91 @@ members :
 ******************************************************************************/
   setTabRead : function (ChannelName)
   {
-    this._tabs[ChannelName].resetIcon();
+    this.__tabs.get(ChannelName).resetIcon();
   },
 
 /******************************************************************************
 * FUNCTION: WebSocket
 ******************************************************************************/
   WebSocket: function()
-  {
+  { 
+    var __parent = this;
     var buffer = "";
+    
     if ("WebSocket" in window)
     {   
-      ws = new WebSocket("ws://pms.muhla-solutions.de:8888");
-      ws.onopen = function()
+      __ws = new WebSocket("ws://pms.muhla-solutions.de:8888");
+      __ws.onopen = function()
       {   
-        ws.send(_parent.toNetstring("/join test"));
       };  
-      ws.onmessage = function (evt) 
+      __ws.onmessage = function (evt) 
       {        
-       buffer += evt.data;
-        
-       var str;
-       while((str = _parent.readNetstring(buffer)) != undefined){
-       var command = pms.Parser.parseMessage(str);
-        
-       if(pms.Parser.error)
-       {
-         alert(pms.Parser.error);
-       }
-       else
-       {
-          if(command.arguments[0] != _activeTab)
+        buffer += evt.data;
+
+        var str;
+        while((str = __parent.readNetstring(buffer)) != undefined){
+          var command = pms.Parser.parseMessage(str);
+
+          if(pms.Parser.error)
           {
-          _parent.setTabUnread(command.arguments[0]);
+          alert(pms.Parser.error);
           }
-        _parent._widgets[command.arguments[0]].setMessage(command.arguments[1]+": "+command.arguments[3]+"=>"+_activeTab);
-       }
-       buffer = "";
-         
-      }
-       
+          else
+          {
+            __parent.receiveMessage(command);
+          }
+          buffer = "";
+        }
       };  
-      ws.onclose = function(evt)
+      __ws.onclose = function(evt)
       {   
         alert("close");
       };  
     }
   },
   
+/******************************************************************************
+* FUNCTION: sendMessage
+******************************************************************************/  
+  sendMessage : function (__parent)
+  {
+    var EditMessage = "";
+    var OrigMessage = __parent.__Hash.get("Input").getValue();
+    
+    if(OrigMessage.substr(0,1) != "/")
+    {
+      if(__parent.getChannelName() != "default")
+        EditMessage = "/send \""+__parent.getChannelName()+"\" \""+OrigMessage+"\"";
+    }
+    else
+    {
+      EditMessage = OrigMessage;
+    }
+    
+    __ws.send(this.toNetstring(EditMessage));
+    
+    return undefined;
+    this.debug("Message:"+Message);
+  },
+  
+/******************************************************************************
+* FUNCTION: receiveMessage
+******************************************************************************/
+  receiveMessage : function (MessageObject)
+  {
+    var name        = MessageObject.name;
+    var ChannelName = MessageObject.arguments[0];
+    var Message     = MessageObject.arguments[1];
+    
+    if(this.__widgets.get(ChannelName))
+    {
+      if(ChannelName != __activeTab)
+      {      
+            this.setTabUnread(ChannelName);
+      }
+      this.__widgets.get(ChannelName).setMessage(Message); 
+    }
+  },
 /******************************************************************************
 * FUNCTION: readNetstring
 ******************************************************************************/

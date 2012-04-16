@@ -13,10 +13,22 @@ qx.Class.define("pms.ChatWidget",
 {
 extend : qx.ui.container.Composite,
 
-construct : function()
+construct : function(Core,ChannelName)
 {
   this.base(arguments);
-  _parentb = this;
+  
+  this.__Hash   =   new pms.Hash();
+  
+  this.__Hash.put("Core",         Core);
+  this.__Hash.put("ChannelName",  ChannelName);
+  this.__Hash.put("ListData",     new qx.data.Array());
+  this.__Hash.put("ListUserData", new qx.data.Array());
+  this.__Hash.put("Topic",        new qx.ui.form.TextField());
+  this.__Hash.put("Message",      new qx.ui.form.TextArea());
+  this.__Hash.put("Input",        new qx.ui.form.TextField());
+  this.__Hash.put("List",         new qx.ui.list.List(this.__Hash.get("ListData")));
+  this.__Hash.put("UserList",     new qx.ui.list.List(this.__Hash.get("ListUserData")));
+  
   this.main();
 },
 
@@ -25,46 +37,34 @@ construct : function()
 MEMBERS
 *****************************************************************************
 */
-
 members :
 {
-
-  _parentb : "",
-  m_Input : null,
-  m_Message : null,
-  m_Topic : null,
-  m_List : null,
-  m_Button : null,
-  m_ListData : null,
+  '__Hash'      : null,
 
 /******************************************************************************
 * FUNCTION: main
 ******************************************************************************/
   main : function ()
   { 
-    m_ListData  =  new qx.data.Array();
-    m_Topic     =  new qx.ui.form.TextField("Topic");
-    m_Message   =  new qx.ui.form.TextArea("TextArea");
-    m_Input     =  new qx.ui.form.TextField("TextField");
-    m_Button    =  new qx.ui.form.Button("Push Data");
-    m_List      =  new qx.ui.list.List(m_ListData);
-    m_UserList  =  new qx.ui.list.List(m_ListData);
-    
-    m_Input.addListener("keypress",function(e){
-      if(e.getKeyIdentifier() == "Enter")
+    var __parent = this;
+
+    this.__Hash.get("UserList").setPadding(0);
+     
+    this.__Hash.get("Input").addListener("keypress",function(e){
+      if(e.getKeyIdentifier() == "Enter" && this.getValue() != "")
       {
+        __parent.__Hash.get("Core").sendMessage(__parent);
         this.setValue("");        
       }
     });
 
     this.set( { padding: 0 } );
     this.setLayout(new qx.ui.layout.VBox(3));
-      
-    m_Topic.setEnabled(false);
-    m_List.setSelectable(false);
+
+    this.__Hash.get("Topic").setEnabled(false);
+    this.__Hash.get("List").setSelectable(false);
 
     this.setWidgetLayout(this);
-
   },
 
 /******************************************************************************
@@ -72,32 +72,37 @@ members :
 ******************************************************************************/  
   setWidgetLayout : function (tabView)
   {
-    tabView.add(m_Topic.set({
+    tabView.add(this.__Hash.get("Topic").set({
       maxHeight:30
       }), { flex : 1 });
  
     var splitpane = new qx.ui.splitpane.Pane("horizontal");
-    
-    m_UserList.setMaxWidth(150);
-    m_UserList.setMinWidth(150);
-    splitpane.add(m_UserList,1);
+    this.__Hash.get("UserList").setMaxWidth(150);
+    this.__Hash.get("UserList").setMinWidth(150);
+    splitpane.add(this.__Hash.get("UserList"),1);
 
-    splitpane.add(m_List,2);
+    splitpane.add(this.__Hash.get("List"),2);
     
     tabView.add(splitpane.set({
     }), { flex : 2 });  
     
-    tabView.add(m_Input.set({
+    tabView.add(this.__Hash.get("Input").set({
       maxHeight:30
     }), { flex : 3 });
   },
 
 /******************************************************************************
-* FUNCTION: setWidgetLayout
+* FUNCTION: setMessage
 ******************************************************************************/  
   setMessage : function (value)
   {
-    m_ListData.push(value);
+    this.__Hash.get("ListData").push(value);
+    this.__Hash.get("List").scrollByY(this.__Hash.get("List").getItemHeight()*this.__Hash.get("ListData").getLength());    
+  },
+  
+  getChannelName : function ()
+  {
+    return this.__Hash.get("ChannelName");
   }
 }
 });
