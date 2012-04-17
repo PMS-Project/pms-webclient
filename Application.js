@@ -23,12 +23,12 @@ construct : function()
   this.base(arguments);
   __activeTab     = "default";
   this.__tabs     = new pms.Hash();
-  this.__widgets  = new pms.Hash();
+  this.__widgets  = new pms.Hash();  
 },
 
 /******************************************************************************
-MEMBERS
-******************************************************************************/
+* MEMBERS
+******************************************************************************/  
 members :
 {
   '__tabs'        : null,
@@ -133,7 +133,7 @@ members :
         buffer += evt.data;
 
         var str;
-        while((str = __parent.readNetstring(buffer)) != undefined){
+        while((str = pms.NetString.readNetstring(buffer)) != undefined){
           var command = pms.Parser.parseMessage(str);
 
           if(pms.Parser.error)
@@ -159,7 +159,7 @@ members :
 ******************************************************************************/  
   sendMessage : function (Message)
   {
-    __ws.send(this.toNetstring(Message)); 
+    __ws.send(pms.NetString.toNetstring(Message)); 
   },
   
 /******************************************************************************
@@ -257,51 +257,6 @@ members :
       default:
         break
     }
-  },
-/******************************************************************************
-* FUNCTION: readNetstring
-******************************************************************************/
-  readNetstring : function (buffer) 
-  {
-    var buflen = buffer.length;
-    var delim = -1;
-    for(var i = 0; i < buflen; i++){
-      var cc = buffer.charCodeAt(i);
-      if(cc == 0x3a){
-        if(i == 0){
-          return handleInvalidMessage();
-        }
-        delim = i;
-        break;
-      }
-      if (cc < 0x30 || cc > 0x39){ 
-        return handleInvalidMessage();
-      }
-    }
-    if(delim > 0){
-      var msgLenTxt = buffer.substr(0,delim);
-      var msgLen = parseInt(msgLenTxt);
-      if(msgLen === NaN){
-        return handleInvalidMessage();
-      }
-      //if the buffer is shorter than the data we need stop
-      if(msgLen+msgLenTxt.length+1+1 > buffer.length)
-        return;
-      if(buffer.charCodeAt(msgLenTxt.length+1+msgLen) != 0x2c){
-        return handleInvalidMessage();
-      }
-      var message = buffer.substr(delim+1,msgLen);
-      buffer = buffer.substr(msgLenTxt.length+1+msgLen+1);
-      return message;
-    }
-    return undefined;
-  },
-/******************************************************************************
-* FUNCTION: toNetstring
-******************************************************************************/  
-  toNetstring: function(str)
-  {
-    return str.length+":"+str+",";
   }
 }
 });

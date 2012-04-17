@@ -6,17 +6,21 @@ Authors: Lukas Michalski, Benjamin Zeller, Thorsten Schwalb
 
 ************************************************************************ */
 
-/**
-* This is the main application class of your custom application "pms"
-*/
 qx.Class.define("pms.ChatWidget",
 {
 extend : qx.ui.container.Composite,
 
+/******************************************************************************
+* CONSTRUCTOR
+******************************************************************************/  
 construct : function(Core,ChannelName)
 {
   this.base(arguments);
   
+  this.__warpMsg       = new pms.warpMessage();
+  this.__warpMsg.registerCommand("leave");
+  this.__warpMsg.registerCommand("topic");
+
   this.__Hash   =   new pms.Hash();
   
   this.__Hash.put("Core",         Core);
@@ -32,15 +36,14 @@ construct : function(Core,ChannelName)
   this.main();
 },
 
-/*
-*****************************************************************************
-MEMBERS
-*****************************************************************************
-*/
+/******************************************************************************
+* MEMBERS
+******************************************************************************/  
 members :
 {
   '__Hash'      : null,
-
+  '__warpMsg'   : null,
+  
 /******************************************************************************
 * FUNCTION: main
 ******************************************************************************/
@@ -55,16 +58,11 @@ members :
       {
         var Message = "";
         
-        if(this.getValue().substr(0,1) != "/")
-        {
-          if(__parent.getChannelName() != "default")
-            Message = "/send \""+__parent.getChannelName()+"\" \""+this.getValue()+"\"";
-        }
-        else
-        {
-          Message = this.getValue();
-        }
-        __parent.__Hash.get("Core").sendMessage(Message);
+        Message = __parent.__warpMsg.warpMessage(this.getValue(),__parent.getChannelName());
+
+        if(Message != null)
+          __parent.__Hash.get("Core").sendMessage(Message);
+        
         this.setValue("");        
       }
     });

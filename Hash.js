@@ -1,7 +1,18 @@
+/* ************************************************************************
+
+License: MIT
+
+Authors: Lukas Michalski, Benjamin Zeller, Thorsten Schwalb
+
+************************************************************************ */
+
 qx.Class.define("pms.Hash",
 {
   extend : qx.core.Object,
   
+/******************************************************************************
+* CONSTRUCTOR
+******************************************************************************/  
   construct : function()
   {
     this.base(arguments);
@@ -18,7 +29,11 @@ qx.Class.define("pms.Hash",
   
   members : 
   {
-    put : function(key, value)
+
+/******************************************************************************
+* FUNCTION: put
+******************************************************************************/  
+      put : function(key, value)
     {
       // Does this key already exist?
       if (this.__values[key] === undefined)
@@ -34,13 +49,19 @@ qx.Class.define("pms.Hash",
       this.__values[key] = value;
     },
     
-    get : function(key)
+/******************************************************************************
+* FUNCTION: get
+******************************************************************************/  
+      get : function(key)
     {
       // Return the value corresponding to the given key
       return this.__values[key];
     },
     
-    remove : function(key)
+/******************************************************************************
+* FUNCTION: remove
+******************************************************************************/  
+      remove : function(key)
     {
       // Does this key exist?
       if (this.__values[key])
@@ -56,7 +77,10 @@ qx.Class.define("pms.Hash",
       }
     },
     
-    getSortedKeys : function()
+/******************************************************************************
+* FUNCTION: getSortedKeys
+******************************************************************************/  
+      getSortedKeys : function()
     {
       // Make a copy of the keys so the user doesn't screw with ours
       var keys = qx.lang.Array.clone(this.__keys);
@@ -68,7 +92,10 @@ qx.Class.define("pms.Hash",
       return keys;
     },
     
-    getLength : function()
+/******************************************************************************
+* FUNCTION: getLength
+******************************************************************************/  
+      getLength : function()
     {
       var length = this.__length;
       return length;

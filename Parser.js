@@ -9,6 +9,10 @@ Authors: Lukas Michalski, Benjamin Zeller, Thorsten Schwalb
 qx.Class.define("pms.Parser",{
 statics:  
 {
+
+/******************************************************************************
+* FUNCTION: Parser
+******************************************************************************/  
   Parser : function () {
       this.error = null;
       this.buffer = null;
@@ -18,7 +22,7 @@ statics:
 /******************************************************************************
 * FUNCTION: parseMessage
 ******************************************************************************/  
-  parseMessage : function(message) {
+  parseMessage : function(message,TokenAndTail) {
       this.error = null;
       this.offset = 0;
       this.buffer = message;
@@ -38,6 +42,7 @@ statics:
           var onechar = this.currentChar();
           if (onechar == "\"" || onechar == "'") arg = this.parseString();
           else if (onechar.match(/^[0-9|\+|\-|\.]$/)) arg = this.parseNumber();
+          else if (TokenAndTail == true) arg = this.parseTail();
           else {
               this.error = "Unexpected Elements";
               return undefined;
@@ -146,6 +151,17 @@ statics:
       }
       this.error = "String is missing its end quotes";
       return undefined;
+  },
+  
+/******************************************************************************
+* FUNCTION: parseTail
+******************************************************************************/  
+  parseTail : function()  {
+      var message = this.currentChar();
+      while(this.hasNext())  {
+        message += this.nextChar();
+      }
+      return "\""+message+"\"";
   },
 
 /******************************************************************************
