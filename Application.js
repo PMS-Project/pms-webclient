@@ -49,7 +49,10 @@ members :
     this.base(arguments);
 
     tabView = new qx.ui.tabview.TabView();
-    this.getRoot().add(tabView, {edge: 25});
+    
+    mainWidget = new pms.MainWidget(tabView);
+    
+    this.getRoot().add(mainWidget, {edge: 25});
     this.createTab("default");    
 
     this.WebSocket();    

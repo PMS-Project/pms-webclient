@@ -25,13 +25,13 @@ construct : function(Core,ChannelName)
   
   this.__Hash.put("Core"          ,Core);
   this.__Hash.put("ChannelName"   ,ChannelName);
-  this.__Hash.put("MsgData"      ,new qx.data.Array());
-  this.__Hash.put("ListData"  ,new qx.data.Array());
+  this.__Hash.put("MsgData"       ,new qx.data.Array());
+  this.__Hash.put("ListData"      ,new qx.data.Array());
   this.__Hash.put("Topic"         ,new qx.ui.form.TextField());
   this.__Hash.put("Message"       ,new qx.ui.form.TextArea());
   this.__Hash.put("Input"         ,new qx.ui.form.TextField());
-  this.__Hash.put("MsgList"          ,new qx.ui.list.List(this.__Hash.get("MsgData")));
-  this.__Hash.put("List"      ,new qx.ui.list.List(this.__Hash.get("ListData")));
+  this.__Hash.put("MsgList"       ,new qx.ui.list.List(this.__Hash.get("MsgData")));
+  this.__Hash.put("List"          ,new qx.ui.list.List(this.__Hash.get("ListData")));
   this.__Hash.put("TopLabel"      ,new qx.ui.form.TextField());
   this.__Hash.put("UserName"      ,new qx.ui.form.TextField(Core.getUserName()));
   
