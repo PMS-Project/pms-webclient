@@ -24,6 +24,7 @@ construct : function()
   this.__activeTab     = "default";
   this.__tabs     = new pms.Hash();
   this.__widgets  = new pms.Hash();  
+  this.__username = "Hans Dampf";
 },
 
 /******************************************************************************
@@ -31,6 +32,7 @@ construct : function()
 ******************************************************************************/  
 members :
 {
+  '__username'    : null,
   '__tabs'        : null,
   '__widgets'     : null,
   '__activeTab'   : null,
@@ -45,6 +47,7 @@ members :
     var __parent = this;
     
     this.base(arguments);
+
     tabView = new qx.ui.tabview.TabView();
     this.getRoot().add(tabView, {edge: 25});
     this.createTab("default");    
@@ -186,14 +189,14 @@ members :
       case "joined":
         // [0]: ChannelName
         // [1]: Username
-        this.__widgets.get(args[0]).setMessage("User "+args[1]+" joined channel.");
+        this.__widgets.get(args[0]).setMessage("<CHANNEL> User "+args[1]+" joined channel.");
         break;
         
       case "left":
         // [0]: ChannelName
         // [1]: Username
         this.debug("left");
-        this.__widgets.get(args[0]).setMessage("User "+args[1]+" left channel.");
+        this.__widgets.get(args[0]).setMessage("<CHANNEL> User "+args[1]+" left channel.");
         this.setTabUnread(args[0]);
         break;
         
@@ -202,11 +205,14 @@ members :
         // [1]: NewNick
         this.debug("nickchange");
         
+        this.setUserName = args[1];
+        
         for(var x=0;x<this.__tabs.getLength();x++)
         {
+          this.__widgets.get(this.__tabs.getSortedKeys()[x]).setUserName(args[1]);
           if(this.__tabs.getSortedKeys()[x] != "default")
           {
-            this.__widgets.get(this.__tabs.getSortedKeys()[x]).setMessage("User "+args[0]+" is now called "+args[1]+".");
+            this.__widgets.get(this.__tabs.getSortedKeys()[x]).setMessage("<CHANNEL> User "+args[0]+" is now called "+args[1]+".");
           }
         }
         break;
@@ -262,6 +268,22 @@ members :
       default:
         break
     }
-  }
+  },
+
+/******************************************************************************
+* FUNCTION: getUserName
+******************************************************************************/
+  getUserName : function ()
+  {
+    return this.__username;
+  },
+
+/******************************************************************************
+* FUNCTION: setUserName
+******************************************************************************/
+  setUserName : function (value)
+  {
+    this.__username = value;
+  }  
 }
 });

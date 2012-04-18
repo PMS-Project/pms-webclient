@@ -33,7 +33,7 @@ construct : function(Core,ChannelName)
   this.__Hash.put("MsgList"          ,new qx.ui.list.List(this.__Hash.get("MsgData")));
   this.__Hash.put("List"      ,new qx.ui.list.List(this.__Hash.get("ListData")));
   this.__Hash.put("TopLabel"      ,new qx.ui.form.TextField());
-  this.__Hash.put("UserName"      ,new qx.ui.form.TextField());
+  this.__Hash.put("UserName"      ,new qx.ui.form.TextField(Core.getUserName()));
   
   this.main();
 },
@@ -58,8 +58,6 @@ members :
       this.__Hash.get("TopLabel").setValue("ChannelList");
     else
       this.__Hash.get("TopLabel").setValue("UserList");
-    
-    this.__Hash.get("UserName").setValue("Hans Dampf");
     // TEMPORARY
     
     this.__Hash.get("Input").addListener("keypress",function(e){
@@ -180,6 +178,14 @@ members :
   removeListItem : function (value)
   {
     
+  },
+
+/******************************************************************************
+* FUNCTION: setUserName
+******************************************************************************/  
+  setUserName : function (value)
+  {
+    this.__Hash.get("UserName").setValue(value);
   }
 }
 });
