@@ -21,7 +21,7 @@ extend : qx.application.Standalone,
 construct : function()
 {
   this.base(arguments);
-  __activeTab     = "default";
+  this.__activeTab     = "default";
   this.__tabs     = new pms.Hash();
   this.__widgets  = new pms.Hash();  
 },
@@ -53,7 +53,7 @@ members :
  
     tabView.addListener("changeSelection",function(e)  
     {
-      __activeTab = e.getData()[0].getLabel();
+      __parent.__activeTab = e.getData()[0].getLabel();
       __parent.setTabRead(e.getData()[0].getLabel());
     });
   },
@@ -180,6 +180,7 @@ members :
         this.debug("message");
         var timedate = pms.timeFormat.format(args[2]);
         this.__widgets.get(args[0]).setMessage(timedate+" - "+args[1]+": "+args[3]);
+        this.setTabUnread(args[0]);
         break;
         
       case "joined":
@@ -193,6 +194,7 @@ members :
         // [1]: Username
         this.debug("left");
         this.__widgets.get(args[0]).setMessage("User "+args[1]+" left channel.");
+        this.setTabUnread(args[0]);
         break;
         
       case "nickchange":
@@ -213,14 +215,14 @@ members :
         // [0]: ChannelName
         // [ ]: Nicknames
         this.debug("userlist");
-        
+        //this.setTabUnread(args[0]);
         break;
         
       case "channellist":
         // [ ]: ChannelNames
         this.debug("channellist");
         // => NOCH SERVERMESSAGE
-        this.__widgets.get(args[0]).setMessage();
+        //this.__widgets.get(args[0]).setMessage();
         break;
         
       case "serverMessage":
@@ -228,6 +230,7 @@ members :
         // [1]: Message
         this.debug("serverMessage");
         this.__widgets.get(args[0]).setMessage("PMS-Server: "+args[1]);
+        this.setTabUnread(args[0]);
         break;
         
       case "channeltopic":
@@ -235,6 +238,8 @@ members :
         // [1]: Topic
         this.debug("channeltopic");
         this.__widgets.get(args[0]).setTopic(args[1]);
+        this.__widgets.get(args[0]).setMessage("Topic of channel was changed");
+        this.setTabUnread(args[0]);
         break;
         
       case "openwindow":
