@@ -210,10 +210,6 @@ members :
         // [1]: NewNick
         this.debug("nickchange");
         
-        this.debug("OLD:"+args[0]);
-        this.debug("NEW:"+args[1]);
-        this.debug("VAR:"+this.getUserName());
-        
         // This user changed his username
         if(this.getUserName() == args[0])
         {
@@ -240,7 +236,11 @@ members :
         // [0]: ChannelName
         // [ ]: Nicknames
         this.debug("userlist");
-        //INITIAL LIST
+        for (var x=1; x<=args.length; x++)
+        {
+          if(args[x] != this.__username)
+            this.__widgets.get(args[0]).addListItem(args[x]);
+        }
         break;
         
       case "channellist":
