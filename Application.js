@@ -24,7 +24,7 @@ construct : function()
   this.__activeTab     = "default";
   this.__tabs     = new pms.Hash();
   this.__widgets  = new pms.Hash();  
-  this.__username = "User1";
+  this.__username = null;
 },
 
 /******************************************************************************
@@ -186,7 +186,6 @@ members :
         this.debug("message");
         var timedate = pms.timeFormat.format(args[2]);
         this.__widgets.get(args[0]).setMessage(timedate+" - "+args[1]+": "+args[3]);
-        this.__widgets.get(args[0]).setListItem(args[1]);
         this.setTabUnread(args[0]);
         break;
         
@@ -224,7 +223,7 @@ members :
             this.__widgets.get(this.__tabs.getSortedKeys()[x]).setUserName(args[1]);
           }
         }
-        
+
         // SetMessage to all opened channels
         for(var x=0;x<this.__tabs.getLength();x++)
         {
