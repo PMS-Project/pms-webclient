@@ -16,7 +16,6 @@ extend : qx.ui.container.Composite,
 construct : function(mainWidget)
 {
   this.base(arguments);
-  this.debug(mainWidget);
   this.__mainWidget = mainWidget;
   this.__logoWidget = new qx.ui.basic.Image("resource/pms/logo_pms.png")
   this.main();
@@ -32,7 +31,6 @@ members:
   
   main : function()
   {
-    this.debug(this.__mainWidget);
     this.setLayout(new qx.ui.layout.VBox(2));
 
     this.setWidgetLayout(this);

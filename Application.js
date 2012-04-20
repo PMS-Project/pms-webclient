@@ -149,6 +149,7 @@ members :
           else
           {
             __parent.receiveMessage(command);
+            __parent.debug(">>>IN:  "+pms.NetString.toNetstring(str));
           }
           buffer = "";
         }
@@ -165,6 +166,7 @@ members :
 ******************************************************************************/  
   sendMessage : function (Message)
   {
+    this.debug("<<<OUT: "+pms.NetString.toNetstring(Message));
     __ws.send(pms.NetString.toNetstring(Message)); 
   },
   
@@ -183,7 +185,6 @@ members :
         // [1]: Who
         // [2]: When
         // [3]: Message
-        this.debug("message");
         var timedate = pms.timeFormat.format(args[2]);
         this.__widgets.get(args[0]).setMessage(timedate+" - "+args[1]+": "+args[3]);
         this.setTabUnread(args[0]);
@@ -192,6 +193,7 @@ members :
       case "joined":
         // [0]: ChannelName
         // [1]: Username
+
         this.__widgets.get(args[0]).setMessage("<CHANNEL> User "+args[1]+" joined channel.");
         this.__widgets.get(args[0]).addListItem(args[1]);
         break;
@@ -199,7 +201,7 @@ members :
       case "left":
         // [0]: ChannelName
         // [1]: Username
-        this.debug("left");
+        
         this.__widgets.get(args[0]).setMessage("<CHANNEL> User "+args[1]+" left channel.");
         this.__widgets.get(args[0]).removeListItem(args[1]);
         this.setTabUnread(args[0]);
@@ -208,7 +210,6 @@ members :
       case "nickchange":
         // [0]: OldNick
         // [1]: NewNick
-        this.debug("nickchange");
         
         // This user changed his username
         if(this.getUserName() == args[0])
@@ -235,7 +236,7 @@ members :
       case "userlist":
         // [0]: ChannelName
         // [ ]: Nicknames
-        this.debug("userlist");
+        
         for (var x=1; x<=args.length; x++)
         {
           if(args[x] != this.__username)
@@ -245,7 +246,7 @@ members :
         
       case "channellist":
         // [ ]: ChannelNames
-        this.debug("channellist");
+        
         // => NOCH SERVERMESSAGE
         //this.__widgets.get(args[0]).setMessage();
         break;
@@ -253,7 +254,7 @@ members :
       case "serverMessage":
         // [0]: ChannelName
         // [1]: Message
-        this.debug("serverMessage");
+        
         this.__widgets.get(args[0]).setMessage("PMS-Server: "+args[1]);
         this.setTabUnread(args[0]);
         break;
@@ -261,7 +262,7 @@ members :
       case "channeltopic":
         // [0]: ChannelName
         // [1]: Topic
-        this.debug("channeltopic");
+        
         this.__widgets.get(args[0]).setTopic(args[1]);
         this.__widgets.get(args[0]).setMessage("Topic of channel was changed");
         this.setTabUnread(args[0]);
@@ -269,7 +270,7 @@ members :
         
       case "openwindow":
         // [0]: WindowName
-        this.debug("openwindow");
+        
         if(!this.__tabs.get(args[0]))
         {
           this.createTab(args[0]);
