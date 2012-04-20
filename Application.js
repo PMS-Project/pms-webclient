@@ -24,7 +24,7 @@ construct : function()
   this.__activeTab     = "default";
   this.__tabs     = new pms.Hash();
   this.__widgets  = new pms.Hash();  
-  this.__username = "Hans Dampf";
+  this.__username = "User1";
 },
 
 /******************************************************************************
@@ -186,6 +186,7 @@ members :
         this.debug("message");
         var timedate = pms.timeFormat.format(args[2]);
         this.__widgets.get(args[0]).setMessage(timedate+" - "+args[1]+": "+args[3]);
+        this.__widgets.get(args[0]).setListItem(args[1]);
         this.setTabUnread(args[0]);
         break;
         
@@ -193,6 +194,7 @@ members :
         // [0]: ChannelName
         // [1]: Username
         this.__widgets.get(args[0]).setMessage("<CHANNEL> User "+args[1]+" joined channel.");
+        this.__widgets.get(args[0]).addListItem(args[1]);
         break;
         
       case "left":
@@ -200,6 +202,7 @@ members :
         // [1]: Username
         this.debug("left");
         this.__widgets.get(args[0]).setMessage("<CHANNEL> User "+args[1]+" left channel.");
+        this.__widgets.get(args[0]).removeListItem(args[1]);
         this.setTabUnread(args[0]);
         break;
         
@@ -208,14 +211,28 @@ members :
         // [1]: NewNick
         this.debug("nickchange");
         
-        this.setUserName = args[1];
+        this.debug("OLD:"+args[0]);
+        this.debug("NEW:"+args[1]);
+        this.debug("VAR:"+this.getUserName());
         
+        // This user changed his username
+        if(this.getUserName() == args[0])
+        {
+          this.setUserName(args[1]);
+          for(var x=0;x<this.__tabs.getLength();x++)
+          {
+            this.__widgets.get(this.__tabs.getSortedKeys()[x]).setUserName(args[1]);
+          }
+        }
+        
+        // SetMessage to all opened channels
         for(var x=0;x<this.__tabs.getLength();x++)
         {
-          this.__widgets.get(this.__tabs.getSortedKeys()[x]).setUserName(args[1]);
           if(this.__tabs.getSortedKeys()[x] != "default")
           {
             this.__widgets.get(this.__tabs.getSortedKeys()[x]).setMessage("<CHANNEL> User "+args[0]+" is now called "+args[1]+".");
+            this.__widgets.get(this.__tabs.getSortedKeys()[x]).removeListItem(args[0]);
+            this.__widgets.get(this.__tabs.getSortedKeys()[x]).addListItem(args[1]);
           }
         }
         break;
@@ -224,7 +241,7 @@ members :
         // [0]: ChannelName
         // [ ]: Nicknames
         this.debug("userlist");
-        //this.setTabUnread(args[0]);
+        //INITIAL LIST
         break;
         
       case "channellist":

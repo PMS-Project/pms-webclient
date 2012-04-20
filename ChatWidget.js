@@ -59,7 +59,20 @@ members :
     else
       this.__Hash.get("TopLabel").setValue("UserList");
     // TEMPORARY
-    
+
+    this.set( { padding: 0 } );
+    this.setLayout(new qx.ui.layout.VBox(3));
+
+    this.__Hash.get("Topic").setEnabled(false);
+    this.__Hash.get("MsgList").setSelectable(false);
+
+    this.setWidgetLayout(this);
+
+    this.removeListItem("Cla");
+
+    /**************************************************************************
+    * LISTENER FOR TEXTFIELD
+    **************************************************************************/
     this.__Hash.get("Input").addListener("keypress",function(e){
       if(e.getKeyIdentifier() == "Enter" && this.getValue() != "")
       {
@@ -73,14 +86,6 @@ members :
         this.setValue("");        
       }
     });
-
-    this.set( { padding: 0 } );
-    this.setLayout(new qx.ui.layout.VBox(3));
-
-    this.__Hash.get("Topic").setEnabled(false);
-    this.__Hash.get("MsgList").setSelectable(false);
-
-    this.setWidgetLayout(this);
   },
 
 /******************************************************************************
@@ -165,11 +170,12 @@ members :
   },
 
 /******************************************************************************
-* FUNCTION: setListItem
+* FUNCTION: addListItem
 ******************************************************************************/  
-  setListItem : function (value)
+  addListItem : function (value)
   {
-    this.__Hash.get("MsgData").push(value);    
+    this.__Hash.get("ListData").push(value);   
+    this.__Hash.get("ListData").sort();
   },
 
 /******************************************************************************
@@ -177,7 +183,8 @@ members :
 ******************************************************************************/  
   removeListItem : function (value)
   {
-    
+    var pos = this.__Hash.get("ListData").indexOf(value);
+    this.__Hash.get("ListData").removeAt(pos);
   },
 
 /******************************************************************************
@@ -186,6 +193,14 @@ members :
   setUserName : function (value)
   {
     this.__Hash.get("UserName").setValue(value);
-  }
+  },
+  
+/******************************************************************************
+* FUNCTION: getUserName
+******************************************************************************/  
+  getUserName : function (value)
+  {
+    return this.__Hash.get("UserName").getValue();
+  }  
 }
 });
