@@ -25,12 +25,11 @@ construct : function(Core,ChannelName)
   
   this.__Hash.put("Core"          ,Core);
   this.__Hash.put("ChannelName"   ,ChannelName);
-  this.__Hash.put("MsgData"       ,new qx.data.Array());
   this.__Hash.put("ListData"      ,new qx.data.Array());
   this.__Hash.put("Topic"         ,new qx.ui.form.TextField());
   this.__Hash.put("Message"       ,new qx.ui.form.TextArea());
   this.__Hash.put("Input"         ,new qx.ui.form.TextField());
-  this.__Hash.put("MsgList"       ,new qx.ui.list.List(this.__Hash.get("MsgData")));
+  this.__Hash.put("MsgList"       ,new pms.HtmlWidget(this.__Hash.get("ChannelName")));
   this.__Hash.put("List"          ,new qx.ui.list.List(this.__Hash.get("ListData")));
   this.__Hash.put("TopLabel"      ,new qx.ui.form.TextField());
   this.__Hash.put("UserName"      ,new qx.ui.form.TextField(Core.getUserName()));
@@ -67,9 +66,7 @@ members :
     this.__Hash.get("MsgList").setSelectable(false);
 
     this.setWidgetLayout(this);
-
-    this.removeListItem("Cla");
-
+    
     /**************************************************************************
     * LISTENER FOR TEXTFIELD
     **************************************************************************/
@@ -156,14 +153,20 @@ members :
 ******************************************************************************/  
   setMessage : function (value)
   {
-    this.__Hash.get("MsgData").push(value);
-    this.__Hash.get("MsgList").scrollByY(this.__Hash.get("MsgList").getItemHeight()*this.__Hash.get("MsgData").getLength());    
+    this.__Hash.get("MsgList").addMessage(value,this.__Hash.get("ChannelName"));
   },
-  
+
+/******************************************************************************
+* FUNCTION: getChannelName
+******************************************************************************/   
   getChannelName : function ()
   {
     return this.__Hash.get("ChannelName");
   },
+  
+/******************************************************************************
+* FUNCTION: setTopic
+******************************************************************************/  
   setTopic : function (topic)
   {
     this.__Hash.get("Topic").setValue(topic);

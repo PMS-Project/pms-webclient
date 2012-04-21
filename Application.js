@@ -25,6 +25,7 @@ construct : function()
   this.__tabs     = new pms.Hash();
   this.__widgets  = new pms.Hash();  
   this.__username = null;
+  this.__wait     = 0;
 },
 
 /******************************************************************************
@@ -38,6 +39,7 @@ members :
   '__activeTab'   : null,
   'buffer'        : null,
   '__ws'          : null,
+  '__wait'        : null,
 
 /******************************************************************************
 * FUNCTION: main
@@ -62,6 +64,7 @@ members :
       __parent.__activeTab = e.getData()[0].getLabel();
       __parent.setTabRead(e.getData()[0].getLabel());
     });
+    
   },
   
 /******************************************************************************
@@ -100,7 +103,9 @@ members :
     //Adding Page to tabView
     tabView.add(this.__tabs.get(ChannelName));
     
+    //QxWidget.flushGlobalQueues();
     this.setTabUnread(ChannelName);
+    this.__wait = 0;
   },
 
 /******************************************************************************
@@ -126,7 +131,7 @@ members :
   WebSocket: function()
   { 
     var __parent = this;
-    var buffer = "";
+    var buffer = new String();
     
     if ("WebSocket" in window)
     {   
@@ -136,19 +141,21 @@ members :
       };  
       __ws.onmessage = function (evt) 
       {        
+        
         buffer += evt.data;
-
-        var str;
+        
+        var str;// = pms.NetString.readNetstring(buffer);
+        
         while((str = pms.NetString.readNetstring(buffer)) != undefined){
           var command = pms.Parser.parseMessage(str);
-
+          
           if(pms.Parser.error)
           {
           alert(pms.Parser.error);
           }
           else
           {
-            __parent.receiveMessage(command);
+            __parent.receiveMessage(command)//;
             __parent.debug(">>>IN:  "+pms.NetString.toNetstring(str));
           }
           buffer = "";
@@ -270,7 +277,7 @@ members :
         
       case "openwindow":
         // [0]: WindowName
-        
+        this.__wait = 1;
         if(!this.__tabs.get(args[0]))
         {
           this.createTab(args[0]);

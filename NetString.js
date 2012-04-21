@@ -59,4 +59,4 @@ statics:
     return undefined;
   }
 }
-});
+}); 
