@@ -18,7 +18,8 @@ construct: function (channelname)
   this.__channelname = channelname;
   this.__init = 0 ;
   this.__initData = [];
-  
+  this.__dom = this.getContentElement();
+  this.__scrollTo = 10000;
   this.main();
 },
 
@@ -30,13 +31,20 @@ members :
   '__channelname' : null,
   '__init'        : null,
   '__initData'    : null,
+  '__scrollTo'    : null,
   
 /******************************************************************************
 * FUNCTION: main
 ******************************************************************************/
   main : function ()
   {   
-     this.setHtml("<div id=pms-"+this.__channelname+"></div>"); 
+    this.setHtml("<div id=pms-"+this.__channelname+"></div>"); 
+    console.log(this.getContentElement().getDomElement());    
+  },
+  doScroll : function ()
+  {
+    this.__scrollTo += 1000;
+    this.__dom.scrollToY(this.__scrollTo);
   },
   setWidgetLayout : function ()
   {
@@ -69,6 +77,7 @@ members :
       this.debug("jo");
       qx.bom.Collection.create("<pre class='pms-css'>"+value+"</pre>").appendTo("#pms-"+container);
     }
+    this.doScroll();
   },
   setInit : function ()
   {

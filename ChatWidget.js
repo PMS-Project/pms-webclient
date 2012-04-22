@@ -147,6 +147,10 @@ members :
       maxHeight : 25
     }), { flex : 3 });
   },
+  setActive : function ()
+  {
+    this.__Hash.get("MsgList").doScroll();
+  },
 
 /******************************************************************************
 * FUNCTION: setMessage

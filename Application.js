@@ -61,10 +61,10 @@ members :
  
     tabView.addListener("changeSelection",function(e)  
     {
-      __parent.__activeTab = e.getData()[0].getLabel();
-      __parent.setTabRead(e.getData()[0].getLabel());
-    });
-    
+      this.__activeTab = e.getData()[0].getLabel();
+      this.setTabRead(e.getData()[0].getLabel());
+      this.__widgets.get(this.__activeTab).setActive();
+    },this);
   },
   
 /******************************************************************************
