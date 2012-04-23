@@ -68,16 +68,16 @@ members :
 
     this.setWidgetLayout(this);
     
-    /**************************************************************************
-    * LISTENER FOR TEXTFIELD
-    **************************************************************************/
+    /****************************************************************************
+    * LISTEǸER: TextField - Input
+    ****************************************************************************/
     this.__Hash.get("Input").addListener("keypress",function(e){
       if(e.getKeyIdentifier() == "Enter" && this.getValue() != "")
       {
         var Message = "";
         
         Message = __parent.__warpMsg.warpMessage(this.getValue(),__parent.getChannelName());
-
+        
         if(Message != null)
           __parent.__Hash.get("Core").sendMessage(Message);
         

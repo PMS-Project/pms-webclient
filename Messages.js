@@ -21,7 +21,7 @@ statics:
   },
   LeftMessage : function (name)
   {
-    return  "<pre style='color:orange; font-family: arial; padding:0; margin:0;'>"+
+    return  "<pre style='color:yellow; font-family: arial; padding:0; margin:0;'>"+
               "User "+name+" left channel."+
             "</pre>";
   },
@@ -33,7 +33,7 @@ statics:
   },
   ChatMessage : function (who,when,message)
   {
-    return  "<pre style='color:yellow; font-weight:bold; padding:0; margin:0;'>"+
+    return  "<pre style='color:orange; font-weight:bold; padding:0; margin:0;'>"+
               when+" - "+who+": "+message+
             "</pre>";
   }
