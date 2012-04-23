@@ -20,6 +20,7 @@ construct : function(Core,ChannelName)
   this.__warpMsg       = new pms.warpMessage();
   this.__warpMsg.registerCommand("leave");
   this.__warpMsg.registerCommand("topic");
+  this.__warpMsg.registerCommand("users");
 
   this.__Hash   =   new pms.Hash();
   
@@ -54,7 +55,7 @@ members :
 
     // TEMPORARY
     if(this.__Hash.get("ChannelName") == "default")
-      this.__Hash.get("TopLabel").setValue("ChannelList");
+      this.__Hash.get("TopLabel").setValue("");
     else
       this.__Hash.get("TopLabel").setValue("UserList");
     // TEMPORARY
@@ -147,6 +148,10 @@ members :
       maxHeight : 25
     }), { flex : 3 });
   },
+
+/******************************************************************************
+* FUNCTION: setActive();
+******************************************************************************/ 
   setActive : function ()
   {
     this.__Hash.get("MsgList").doScroll();
@@ -208,6 +213,14 @@ members :
   getUserName : function (value)
   {
     return this.__Hash.get("UserName").getValue();
-  }  
+  },
+
+/******************************************************************************
+* FUNCTION: existUser
+******************************************************************************/
+  existUser : function (value)
+  {
+    return this.__Hash.get("ListData").contains(value);
+  }
 }
 });

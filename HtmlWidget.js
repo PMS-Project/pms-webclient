@@ -41,17 +41,26 @@ members :
     this.setHtml("<div id=pms-"+this.__channelname+"></div>"); 
     console.log(this.getContentElement().getDomElement());    
   },
+/******************************************************************************
+* FUNCTION: doScroll
+******************************************************************************/
   doScroll : function ()
   {
     this.__scrollTo += 1000;
-    this.__dom.scrollToY(this.__scrollTo);
+    this.__dom.scrollToY(this.__scrollTo+1000);
   },
+/******************************************************************************
+* FUNCTION: setWidgetLayout
+******************************************************************************/
   setWidgetLayout : function ()
   {
     this.setOverflow("auto","auto");
     this.setDecorator("main");
     this.setBackgroundColor("white"); 
   },
+/******************************************************************************
+* FUNCTION: addMessage
+******************************************************************************/
   addMessage : function (value,container)
   {
     if(this.__init == 0)
@@ -70,7 +79,7 @@ members :
       this.setHtml(data);
       
       if(value.match(/END BACKLOG/))
-        this.setInit();
+       this.setInit();
     }
     else
     {
@@ -79,18 +88,12 @@ members :
     }
     this.doScroll();
   },
+/******************************************************************************
+* FUNCTION: setInit
+******************************************************************************/
   setInit : function ()
   {
     this.__init = 1;
   }
 }
 });
-
-/*
- qx.bom.Collection.query("#div1").append(
-  document.createElement("br"),
-  qx.bom.Collection.query("#div2"),
-  "<em>after div2</em>"
-);
- 
- */

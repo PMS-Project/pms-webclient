@@ -25,7 +25,6 @@ construct : function()
   this.__tabs     = new pms.Hash();
   this.__widgets  = new pms.Hash();  
   this.__username = null;
-  this.__wait     = 0;
 },
 
 /******************************************************************************
@@ -39,7 +38,6 @@ members :
   '__activeTab'   : null,
   'buffer'        : null,
   '__ws'          : null,
-  '__wait'        : null,
 
 /******************************************************************************
 * FUNCTION: main
@@ -102,10 +100,9 @@ members :
     
     //Adding Page to tabView
     tabView.add(this.__tabs.get(ChannelName));
-    
-    //QxWidget.flushGlobalQueues();
+            
     this.setTabUnread(ChannelName);
-    this.__wait = 0;
+
   },
 
 /******************************************************************************
@@ -200,7 +197,7 @@ members :
       case "joined":
         // [0]: ChannelName
         // [1]: Username
-
+        
         this.__widgets.get(args[0]).setMessage("<CHANNEL> User "+args[1]+" joined channel.");
         this.__widgets.get(args[0]).addListItem(args[1]);
         break;
@@ -231,7 +228,9 @@ members :
         // SetMessage to all opened channels
         for(var x=0;x<this.__tabs.getLength();x++)
         {
-          if(this.__tabs.getSortedKeys()[x] != "default")
+          if(this.__widgets.get(this.__tabs.getSortedKeys()[x]).existUser(args[0]) == true)
+            this.debug(this.__tabs.getSortedKeys()[x]+" :TRUE");
+          if(this.__tabs.getSortedKeys()[x] != "default" && this.__widgets.get(this.__tabs.getSortedKeys()[x]).existUser(args[0]) == true)
           {
             this.__widgets.get(this.__tabs.getSortedKeys()[x]).setMessage("<CHANNEL> User "+args[0]+" is now called "+args[1]+".");
             this.__widgets.get(this.__tabs.getSortedKeys()[x]).removeListItem(args[0]);
@@ -277,10 +276,11 @@ members :
         
       case "openwindow":
         // [0]: WindowName
-        this.__wait = 1;
+
         if(!this.__tabs.get(args[0]))
         {
           this.createTab(args[0]);
+          this.setSelection(this.__tabs.get(args[0]));
         }
         break;
         
@@ -311,6 +311,10 @@ members :
   setUserName : function (value)
   {
     this.__username = value;
-  }  
+  } ,
+  setSelection : function (value)
+  {
+    tabView.setSelection([value]);
+  } 
 }
 });
