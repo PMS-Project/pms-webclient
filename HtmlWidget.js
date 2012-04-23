@@ -19,7 +19,7 @@ construct: function (channelname)
   this.__init = 0 ;
   this.__initData = [];
   this.__dom = this.getContentElement();
-  this.__scrollTo = 10000;
+  this.__scrollTo = 1000;
   this.main();
 },
 
@@ -47,7 +47,7 @@ members :
   doScroll : function ()
   {
     this.__scrollTo += 1000;
-    this.__dom.scrollToY(this.__scrollTo+1000);
+    this.__dom.scrollToY(this.__scrollTo+1000,true);
   },
 /******************************************************************************
 * FUNCTION: setWidgetLayout
@@ -71,7 +71,8 @@ members :
       
       for(var x=0; x < this.__initData.length; x++)
       {
-        data += "<pre class='pms-css'>"+this.__initData[x]+"</pre>";
+        //data += "<pre class='pms-css'>"+this.__initData[x]+"</pre>";
+        data += this.__initData[x];
       }
       
       data += "</div>";
@@ -83,8 +84,8 @@ members :
     }
     else
     {
-      this.debug("jo");
-      qx.bom.Collection.create("<pre class='pms-css'>"+value+"</pre>").appendTo("#pms-"+container);
+      //qx.bom.Collection.create("<pre class='pms-css'>"+value+"</pre>").appendTo("#pms-"+container);
+      qx.bom.Collection.create(value).appendTo("#pms-"+container);
     }
     this.doScroll();
   },

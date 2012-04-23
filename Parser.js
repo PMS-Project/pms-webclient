@@ -144,8 +144,11 @@ statics:
       var quotes = this.currentChar();
       while (this.hasNext()) {
           var onechar = this.nextChar();
-          if (onechar == "\\") continue;
-          if (onechar == quotes) return message;
+          if (onechar == "\\"){
+            onechar = this.nextChar();
+          }else{
+            if (onechar == quotes) return message;
+          }
           if (message == null) message = onechar;
           else message += onechar;
       }

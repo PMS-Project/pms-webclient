@@ -56,7 +56,9 @@ members :
     this.createTab("default");    
 
     this.WebSocket();    
- 
+    /**************************************************************************
+    * LISTEǸER: tabView
+    **************************************************************************/
     tabView.addListener("changeSelection",function(e)  
     {
       this.__activeTab = e.getData()[0].getLabel();
@@ -190,7 +192,7 @@ members :
         // [2]: When
         // [3]: Message
         var timedate = pms.timeFormat.format(args[2]);
-        this.__widgets.get(args[0]).setMessage(timedate+" - "+args[1]+": "+args[3]);
+        this.__widgets.get(args[0]).setMessage(pms.Messages.ChatMessage(args[1],timedate,args[3]));
         this.setTabUnread(args[0]);
         break;
         
@@ -198,7 +200,7 @@ members :
         // [0]: ChannelName
         // [1]: Username
         
-        this.__widgets.get(args[0]).setMessage("<CHANNEL> User "+args[1]+" joined channel.");
+        this.__widgets.get(args[0]).setMessage(pms.Messages.JoinedMessage(args[1]));
         this.__widgets.get(args[0]).addListItem(args[1]);
         break;
         
@@ -206,7 +208,7 @@ members :
         // [0]: ChannelName
         // [1]: Username
         
-        this.__widgets.get(args[0]).setMessage("<CHANNEL> User "+args[1]+" left channel.");
+        this.__widgets.get(args[0]).setMessage(pms.Messages.LeftMessage(args[1]));
         this.__widgets.get(args[0]).removeListItem(args[1]);
         this.setTabUnread(args[0]);
         break;
@@ -228,11 +230,9 @@ members :
         // SetMessage to all opened channels
         for(var x=0;x<this.__tabs.getLength();x++)
         {
-          if(this.__widgets.get(this.__tabs.getSortedKeys()[x]).existUser(args[0]) == true)
-            this.debug(this.__tabs.getSortedKeys()[x]+" :TRUE");
           if(this.__tabs.getSortedKeys()[x] != "default" && this.__widgets.get(this.__tabs.getSortedKeys()[x]).existUser(args[0]) == true)
           {
-            this.__widgets.get(this.__tabs.getSortedKeys()[x]).setMessage("<CHANNEL> User "+args[0]+" is now called "+args[1]+".");
+            this.__widgets.get(this.__tabs.getSortedKeys()[x]).setMessage(pms.Messages.NickChangedMessage(args[0],args[1]));
             this.__widgets.get(this.__tabs.getSortedKeys()[x]).removeListItem(args[0]);
             this.__widgets.get(this.__tabs.getSortedKeys()[x]).addListItem(args[1]);
           }
@@ -261,7 +261,8 @@ members :
         // [0]: ChannelName
         // [1]: Message
         
-        this.__widgets.get(args[0]).setMessage("PMS-Server: "+args[1]);
+        //this.__widgets.get(args[0]).setMessage("PMS-Server: "+args[1]);
+        this.__widgets.get(args[0]).setMessage(pms.Messages.ServerMessage(args[1]));
         this.setTabUnread(args[0]);
         break;
         
@@ -270,7 +271,7 @@ members :
         // [1]: Topic
         
         this.__widgets.get(args[0]).setTopic(args[1]);
-        this.__widgets.get(args[0]).setMessage("Topic of channel was changed");
+        this.__widgets.get(args[0]).setMessage(pms.Messages.TopicMessage());
         this.setTabUnread(args[0]);
         break;
         
@@ -312,6 +313,10 @@ members :
   {
     this.__username = value;
   } ,
+
+/******************************************************************************
+* FUNCTION: setSelection
+******************************************************************************/
   setSelection : function (value)
   {
     tabView.setSelection([value]);
