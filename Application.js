@@ -296,8 +296,9 @@ members :
         // [1]: Message
         
         //this.__widgets.get(args[0]).setMessage("PMS-Server: "+args[1]);
-        this.__widgets.get(args[0]).setMessage(pms.Messages.ServerMessage(args[1]));
-        this.setTabUnread(args[0]);
+        //this.__widgets.get(args[0]).setMessage(pms.Messages.ServerMessage(args[1]));
+        this.__widgets.get(this.__activeTab).setMessage(pms.Messages.ServerMessage(args[1]));
+        //this.setTabUnread(args[0]);
         break;
         
       /************************************************************************
