@@ -164,7 +164,7 @@ members :
           else
           {
             __parent.receiveMessage(command)//;
-            __parent.debug(">>>IN:  "+pms.NetString.toNetstring(str));
+            console.log(">>>IN:  "+pms.NetString.toNetstring(str));
           }
           buffer = "";
         }
@@ -185,7 +185,7 @@ members :
 ******************************************************************************/  
   sendMessage : function (Message)
   {
-    this.debug("<<<OUT: "+pms.NetString.toNetstring(Message));
+    console.log("<<<OUT: "+pms.NetString.toNetstring(Message));
     __ws.send(pms.NetString.toNetstring(Message)); 
   },
   

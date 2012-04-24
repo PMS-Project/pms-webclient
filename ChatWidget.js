@@ -75,8 +75,8 @@ members :
       if(e.getKeyIdentifier() == "Enter" && this.getValue() != "")
       {
         var Message = "";
-        
-        Message = __parent.__warpMsg.warpMessage(this.getValue(),__parent.getChannelName());
+                
+        Message = __parent.__warpMsg.warpMessage(__parent.addSlashes(this.getValue()),__parent.getChannelName());
         
         if(Message != null)
           __parent.__Hash.get("Core").sendMessage(Message);
@@ -221,6 +221,17 @@ members :
   existUser : function (value)
   {
     return this.__Hash.get("ListData").contains(value);
+  },
+  
+/******************************************************************************
+* FUNCTION: addSlashes
+******************************************************************************/
+  addSlashes : function (value)
+  {
+    return value.replace(/\\/g,'\\\\').
+                 replace(/\'/g,'\\\'').
+                 replace(/\"/g,'\\"').
+                 replace(/\0/g,'\\0');
   }
 }
 });
