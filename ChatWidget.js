@@ -21,6 +21,7 @@ construct : function(Core,ChannelName)
   this.__warpMsg.registerCommand("leave");
   this.__warpMsg.registerCommand("topic");
   this.__warpMsg.registerCommand("users");
+  this.__warpMsg.setInvalidCommand("users");
 
   this.__Hash   =   new pms.Hash();
   
@@ -77,8 +78,9 @@ members :
         var Message = "";
                 
         Message = __parent.__warpMsg.warpMessage(__parent.addSlashes(this.getValue()),__parent.getChannelName());
-        
-        if(Message != null)
+        if(Message == undefined)
+          __parent.setMessage(pms.Messages.InternalMessage());
+	else if(Message != null)
           __parent.__Hash.get("Core").sendMessage(Message);
         
         this.setValue("");        

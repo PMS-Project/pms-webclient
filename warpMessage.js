@@ -15,7 +15,8 @@ qx.Class.define("pms.warpMessage",
 ******************************************************************************/  
   construct : function()
   {
-    this.regCommands = new qx.type.BaseArray();
+    this.regCommands     = new qx.type.BaseArray();
+    this.invalidCommands = new qx.type.BaseArray();
   },
 
 /******************************************************************************
@@ -23,7 +24,8 @@ qx.Class.define("pms.warpMessage",
 ******************************************************************************/  
   members : 
   {
-    'regCommands' : null,
+    'regCommands'     : null,
+    'invalidCommands' : null,
  
 /******************************************************************************
 * FUNCTION: registerCommand
@@ -31,6 +33,25 @@ qx.Class.define("pms.warpMessage",
     registerCommand : function (name)
     {
       this.regCommands.push(name);
+    },
+
+/******************************************************************************
+* FUNCTION: setInvalidCommand
+******************************************************************************/  
+    setInvalidCommand : function (name)
+    {
+      this.invalidCommands.push(name);
+    },
+
+/******************************************************************************
+* FUNCTION: isInvalidCommand
+******************************************************************************/  
+    isInvalidCommand : function (name)
+    {
+      if(qx.lang.Array.contains(this.invalidCommands,name))
+        return true;
+      else
+        return false;
     },
 
 /******************************************************************************
@@ -49,19 +70,26 @@ qx.Class.define("pms.warpMessage",
       {
         var command = pms.Parser.parseMessage(Message,true);
         
-        if(qx.lang.Array.contains(this.regCommands,command.name))
+        if(this.isInvalidCommand(command.name) == false)
         {
-          if(ChannelName != "default")
+          if(qx.lang.Array.contains(this.regCommands,command.name))
           {
-            returnMessage = "/"+command.name+" "+ChannelName;
+            if(ChannelName != "default")
+            {
+              returnMessage = "/"+command.name+" "+ChannelName;
       
-            if(command.arguments[0] != undefined) 
-              returnMessage += " "+command.arguments[0];
+              if(command.arguments[0] != undefined) 
+                returnMessage += " "+command.arguments[0];
+            }
           }
-        }
+          else
+          {
+            returnMessage = Message;
+          }
+	}
         else
-        {
-          returnMessage = Message;
+        { 
+          returnMessage = undefined;
         }
         return returnMessage;
       }

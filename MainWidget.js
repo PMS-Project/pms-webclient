@@ -48,12 +48,12 @@ members:
     }),{flex:1});
 
     container.add(this.__logoWidget.set({
-      minWidth  : 250,
-      maxWidth  : 250
+      minWidth  : 125,
+      maxWidth  : 125
     }),{flex:2});
     
     tabView.add(container.set({
-      maxHeight : 125
+      maxHeight : 63
     }), { flex : 1 });
 
     tabView.add(this.__mainWidget.set({

@@ -36,6 +36,13 @@ statics:
     return  "<pre style='color:black; font-family: arial; padding:0; margin:0;'>"+
               when+" - "+who+": "+message+
             "</pre>";
+  },
+  InternalMessage : function ()
+  {
+   return  "<pre style='color:red; font-weight: bold; font-family: arial; padding:0; margin:0;'>"+
+             "Invalid command. Only for internal use!"+
+           "</pre>";
   }
+
 } 
 });
