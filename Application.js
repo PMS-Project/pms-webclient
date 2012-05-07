@@ -94,7 +94,8 @@ members :
 ******************************************************************************/
   createTab : function (ChannelName)
   {
-    this.__tabs.put(ChannelName,new qx.ui.tabview.Page(ChannelName));
+    this.__tabs.put(ChannelName,new qx.ui.tabview.Page(ChannelName,"resource/pms/blank.png"));
+    console.log("MUHLALALAL");
     this.__tabs.get(ChannelName).setLayout(new qx.ui.layout.Canvas());
     
     this.__widgets.put(ChannelName,new pms.ChatWidget(this,ChannelName));
@@ -164,7 +165,7 @@ members :
           else
           {
             __parent.receiveMessage(command)//;
-            console.log(">>>IN:  "+pms.NetString.toNetstring(str));
+            console.log("IN>>>:  "+pms.NetString.toNetstring(str));
           }
           buffer = "";
         }
