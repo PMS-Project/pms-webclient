@@ -1,4 +1,4 @@
-/* ************************************************************************
+********************************************************************
 
 License: MIT
 
@@ -165,7 +165,7 @@ members :
           else
           {
             __parent.receiveMessage(command)//;
-            console.log("IN>>>:  "+pms.NetString.toNetstring(str));
+            console.log("IN >>>:  "+pms.NetString.toNetstring(str));
           }
           buffer = "";
         }
@@ -186,7 +186,7 @@ members :
 ******************************************************************************/  
   sendMessage : function (Message)
   {
-    console.log("<<<OUT: "+pms.NetString.toNetstring(Message));
+    console.log("<<< OUT: "+pms.NetString.toNetstring(Message));
     __ws.send(pms.NetString.toNetstring(Message)); 
   },
   

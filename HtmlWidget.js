@@ -39,7 +39,6 @@ members :
   main : function ()
   {   
     this.setHtml("<div id=pms-"+this.__channelname+"></div>"); 
-    console.log(this.getContentElement().getDomElement());    
   },
 /******************************************************************************
 * FUNCTION: doScroll

@@ -80,7 +80,7 @@ members :
         Message = __parent.__warpMsg.warpMessage(__parent.addSlashes(this.getValue()),__parent.getChannelName());
         if(Message == undefined)
           __parent.setMessage(pms.Messages.InternalMessage());
-	else if(Message != null)
+	    else if(Message !== -1)
           __parent.__Hash.get("Core").sendMessage(Message);
         
         this.setValue("");        

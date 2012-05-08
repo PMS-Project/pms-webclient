@@ -64,7 +64,13 @@ qx.Class.define("pms.warpMessage",
       if(Message.substr(0,1) != "/")
       {
         if(ChannelName != "default")
+        {
           return  "/send \""+ChannelName+"\" \""+Message+"\"";
+        }
+        else
+        {
+          return -1;
+        }
       }
       else
       {
